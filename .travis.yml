@@ -1,0 +1,15 @@
+language: java
+branches:
+  only:
+    - develop
+    - /^release-[0-999].[0-999]$/
+    - master
+notifications:
+  email:
+    recipients:
+      - masanchezve@gmail.com
+script:
+  #Test unitario y de integracion con cobertura
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify
+
+
