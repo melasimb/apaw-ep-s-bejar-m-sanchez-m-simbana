@@ -15,5 +15,12 @@ script:
   #SONARCLOUD
   - mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=msanchezv -Dsonar.login=$SONAR
 
-
+#Deploy https://apaw-ep-s-bejar-m-sanchez-m-si.herokuapp.com
+deploy:
+  provider: heroku
+  api_key:
+    secure: $HEROKU
+  on:
+    branch: master
+  app: apaw-ep-s-bejar-m-sanchez-m-si
 
