@@ -7,9 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ApiTestConfig
 class ZoneResourceTest {
@@ -19,24 +18,22 @@ class ZoneResourceTest {
 
     @Test
     void testCreate() {
-        LocalDateTime starDate = LocalDateTime.now();
-        LocalDateTime endDate = LocalDateTime.now();
         ZoneDto zoneDto = this.webTestClient
                 .post().uri(ZoneResource.ZONE)
-                .body(BodyInserters.fromObject(new ZoneDto("Zone A", 20.0, starDate, endDate, "Madrid")))
+                .body(BodyInserters.fromObject(new ZoneDto("Zone A", "Pop", 300, false)))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ZoneDto.class).returnResult().getResponseBody();
         assertNotNull(zoneDto);
         assertEquals("Zone A", zoneDto.getName());
-        assertEquals("20.0", zoneDto.getPrice().toString());
-        assertEquals(starDate, zoneDto.getStartDate());
-        assertEquals(endDate, zoneDto.getEndDate());
+        assertEquals("Pop", zoneDto.getGenre());
+        assertEquals("300", zoneDto.getCapacity().toString());
+        assertEquals(false, zoneDto.getAdaptedDisabled());
     }
 
     @Test
     void testCreateZoneException() {
-        ZoneDto zoneDto = new ZoneDto("Zone A", 20.0, null, null, "Madrid");
+        ZoneDto zoneDto = new ZoneDto("Zone A", null, null, false);
         this.webTestClient
                 .post().uri(ZoneResource.ZONE)
                 .body(BodyInserters.fromObject(zoneDto))

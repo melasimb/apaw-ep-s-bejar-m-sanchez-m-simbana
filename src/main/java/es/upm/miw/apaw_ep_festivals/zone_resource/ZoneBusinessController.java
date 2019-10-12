@@ -14,7 +14,7 @@ public class ZoneBusinessController {
     }
 
     public ZoneDto create(ZoneDto zoneDto) {
-        Zone zone = new Zone(zoneDto.getName(), zoneDto.getPrice(), zoneDto.getStartDate(), zoneDto.getEndDate(), zoneDto.getCity());
+        Zone zone = new Zone(zoneDto.getName(), zoneDto.getGenre(), zoneDto.getCapacity(), zoneDto.getAdaptedDisabled());
         this.zoneDao.save(zone);
         return new ZoneDto(zone);
     }
