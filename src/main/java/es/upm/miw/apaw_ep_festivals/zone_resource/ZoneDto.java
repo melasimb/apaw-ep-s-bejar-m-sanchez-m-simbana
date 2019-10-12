@@ -1,6 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.zone_resource;
 
 import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
+import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 
 public class ZoneDto {
 

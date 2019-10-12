@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ZoneResource.ZONE)
+@RequestMapping(ZoneResource.ZONES)
 public class ZoneResource {
 
-    static final String ZONE = "/zone";
+    public static final String ZONES = "/zones";
 
     private ZoneBusinessController zoneBusinessController;
 

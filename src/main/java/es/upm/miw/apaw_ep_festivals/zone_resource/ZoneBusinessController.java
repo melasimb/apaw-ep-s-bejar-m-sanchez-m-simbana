@@ -1,5 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.zone_resource;
 
+import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
+import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
