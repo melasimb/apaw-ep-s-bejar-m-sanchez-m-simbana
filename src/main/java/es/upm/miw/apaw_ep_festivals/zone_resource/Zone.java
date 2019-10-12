@@ -3,8 +3,6 @@ package es.upm.miw.apaw_ep_festivals.zone_resource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 @Document
 public class Zone {
 
@@ -13,20 +11,17 @@ public class Zone {
 
     private String name;
 
-    private Double price;
+    private String genre;
 
-    private LocalDateTime startDate;
+    private Integer capacity;
 
-    private LocalDateTime endDate;
+    private Boolean adaptedDisabled;
 
-    private String city;
-
-    public Zone(String name, Double price, LocalDateTime startDate, LocalDateTime endDate, String city) {
+    public Zone(String name, String genre, Integer capacity, Boolean adaptedDisabled) {
         this.name = name;
-        this.price = price;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.city = city;
+        this.genre = genre;
+        this.capacity = capacity;
+        this.adaptedDisabled = adaptedDisabled;
     }
 
     public String getId() {
@@ -37,20 +32,16 @@ public class Zone {
         return name;
     }
 
-    public Double getPrice() {
-        return price;
+    public String getGenre() {
+        return genre;
     }
 
-    public LocalDateTime getStartDate() {
-        return startDate;
+    public Integer getCapacity() {
+        return capacity;
     }
 
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public String getCity() {
-        return city;
+    public Boolean getAdaptedDisabled() {
+        return adaptedDisabled;
     }
 
     @Override
@@ -58,10 +49,9 @@ public class Zone {
         return "Zone{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", price=" + price +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", city='" + city + '\'' +
+                ", genre='" + genre + '\'' +
+                ", capacity='" + capacity + '\'' +
+                ", adaptedDisabled=" + adaptedDisabled +
                 '}';
     }
 }
