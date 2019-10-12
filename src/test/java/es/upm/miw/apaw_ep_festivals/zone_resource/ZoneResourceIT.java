@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ApiTestConfig
-class ZoneResourceTest {
+class ZoneResourceIT {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -19,7 +19,7 @@ class ZoneResourceTest {
     @Test
     void testCreate() {
         ZoneDto zoneDto = this.webTestClient
-                .post().uri(ZoneResource.ZONE)
+                .post().uri(ZoneResource.ZONES)
                 .body(BodyInserters.fromObject(new ZoneDto("Zone A", "Pop", 300, false)))
                 .exchange()
                 .expectStatus().isOk()
@@ -35,7 +35,7 @@ class ZoneResourceTest {
     void testCreateZoneException() {
         ZoneDto zoneDto = new ZoneDto("Zone A", null, null, false);
         this.webTestClient
-                .post().uri(ZoneResource.ZONE)
+                .post().uri(ZoneResource.ZONES)
                 .body(BodyInserters.fromObject(zoneDto))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
