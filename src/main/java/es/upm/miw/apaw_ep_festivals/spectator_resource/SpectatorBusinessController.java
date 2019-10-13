@@ -1,5 +1,6 @@
 package es.upm.miw.apaw_ep_festivals.spectator_resource;
 
+import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -17,5 +18,13 @@ public class SpectatorBusinessController {
         Spectator spectator = new Spectator(spectatorDto.getName(), spectatorDto.getSurname(), spectatorDto.getBirthday());
         this.spectatorDao.save(spectator);
         return new SpectatorDto(spectator);
+    }
+
+    public SpectatorDto readSpectator(String id) {
+        return new SpectatorDto(this.findSpectatorByIdAssured(id));
+    }
+
+    private Spectator findSpectatorByIdAssured(String id) {
+        return this.spectatorDao.findById(id).orElseThrow(() -> new NotFoundException("Spectator id: " + id));
     }
 }
