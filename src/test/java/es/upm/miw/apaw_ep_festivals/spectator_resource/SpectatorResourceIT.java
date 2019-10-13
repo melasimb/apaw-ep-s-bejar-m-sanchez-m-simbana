@@ -19,7 +19,7 @@ public class SpectatorResourceIT {
 
     @Test
     void testCreate() {
-        LocalDateTime birthday = LocalDateTime.of(1995,4, 17, 11, 0);
+        LocalDateTime birthday = LocalDateTime.of(1995, 4, 17, 11, 0);
         SpectatorDto spectatorDto = this.webTestClient
                 .post().uri(SpectatorResource.SPECTATORS)
                 .body(BodyInserters.fromObject(new SpectatorDto("Sonia", "Béjar", birthday)))
@@ -40,7 +40,7 @@ public class SpectatorResourceIT {
     }
 
     @Test
-    void testCreateSuggestionException() {
+    void testCreateSpectatorException() {
         SpectatorDto suggestionDto = new SpectatorDto("Marcos", null, LocalDateTime.now());
         this.webTestClient
                 .post().uri(SpectatorResource.SPECTATORS)
