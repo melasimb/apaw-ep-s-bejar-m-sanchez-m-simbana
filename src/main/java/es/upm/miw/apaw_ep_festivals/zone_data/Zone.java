@@ -44,6 +44,22 @@ public class Zone {
         return adaptedDisabled;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setAdaptedDisabled(Boolean adaptedDisabled) {
+        this.adaptedDisabled = adaptedDisabled;
+    }
+
     @Override
     public String toString() {
         return "Zone{" +
