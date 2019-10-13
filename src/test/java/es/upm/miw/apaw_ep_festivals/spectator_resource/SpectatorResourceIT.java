@@ -47,7 +47,7 @@ public class SpectatorResourceIT {
     }
 
     @Test
-    void testCreateSuggestionException() {
+    void testCreateSpectatorException() {
         SpectatorDto suggestionDto = new SpectatorDto("Marcos", null, LocalDateTime.now());
         this.webTestClient
                 .post().uri(SpectatorResource.SPECTATORS)
