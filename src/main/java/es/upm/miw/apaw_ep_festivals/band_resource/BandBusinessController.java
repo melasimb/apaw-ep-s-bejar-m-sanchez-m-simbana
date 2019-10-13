@@ -1,6 +1,5 @@
 package es.upm.miw.apaw_ep_festivals.band_resource;
 
-import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -12,26 +11,23 @@ public class BandBusinessController {
 
     private BandDao bandDao;
 
-    private ConcertDao concertDao;
-
     @Autowired
-    public BandBusinessController(BandDao bandDao, ConcertDao concertDao) {
+    public BandBusinessController(BandDao bandDao) {
         this.bandDao = bandDao;
-        this.concertDao = concertDao;
     }
 
     public List<BandDto> findByRole(String role) {
-        List<BandDto> bandDtos = new ArrayList<BandDto>();
+        List<BandDto> bandDtos = new ArrayList<>();
         List<Band> bands = this.bandDao.findAll();
         for (Band band : bands) {
-            Boolean add = false;
+            boolean add = false;
             List<Artist> artists = band.getArtists();
             for (Artist artist : artists) {
-                if (artist.getRole() == role) {
+                if (artist.getRole().equals(role)) {
                     add = true;
                 }
             }
-            if (add == true) {
+            if (add) {
                 bandDtos.add(new BandDto(band));
             }
         }
