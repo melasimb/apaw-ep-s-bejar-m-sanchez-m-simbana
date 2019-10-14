@@ -1,4 +1,4 @@
-package es.upm.miw.apaw_ep_festivals.concert_resource;
+package es.upm.miw.apaw_ep_festivals.condert_data;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

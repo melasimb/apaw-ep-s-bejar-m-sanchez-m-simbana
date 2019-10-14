@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ConcertResource.CONCERTS)
 public class ConcertResource {
 
-    static final String CONCERTS = "/concerts";
+    public static final String CONCERTS = "/concerts";
 
     private ConcertBusinessController concertBusinessController;
 
