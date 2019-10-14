@@ -19,6 +19,12 @@ public class BandDto {
         // Empty for framework
     }
 
+    public BandDto(String name, List<Artist> artists, List<Concert> concerts) {
+        this.name = name;
+        this.artists = artists;
+        this.concerts = concerts;
+    }
+
     public BandDto(Band band) {
         this.id = band.getId();
         this.name = band.getName();
