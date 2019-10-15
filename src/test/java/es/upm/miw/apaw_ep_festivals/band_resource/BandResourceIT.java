@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ApiTestConfig
 class BandResourceIT {
@@ -51,7 +51,6 @@ class BandResourceIT {
     }
 
     BandBasicDto createBand(String name, List<Artist> artists) {
-
         return this.webTestClient
                 .post().uri(BandResource.BANDS)
                 .body(BodyInserters.fromObject(new BandCreationDto(name, artists, null)))
@@ -59,7 +58,87 @@ class BandResourceIT {
                 .expectStatus().isOk()
                 .expectBody(BandBasicDto.class)
                 .returnResult().getResponseBody();
+    }
 
+    @Test
+    void testFindByRole() {
+        List<Artist> artistsBandOne = new ArrayList<>();
+        artistsBandOne.add(new Artist("Alecia Beth", LocalDateTime.now(), "singer"));
+        createBand("band-1", artistsBandOne);
+
+        List<Artist> artistsBandTwo = new ArrayList<>();
+        artistsBandTwo.add(new Artist("Carlos Santana", LocalDateTime.now(), "guitar player"));
+        createBand("band-2", artistsBandTwo);
+
+        List<Artist> artistsBandThree = new ArrayList<>();
+        artistsBandThree.add(new Artist("Alicia Keys", LocalDateTime.now(), "singer"));
+        createBand("band-3", artistsBandThree);
+
+        List<BandDto> bands = this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                        .queryParam("q", "role:singer")
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BandDto.class)
+                .returnResult().getResponseBody();
+        assertFalse(bands.isEmpty());
+
+        boolean findByRoleCorrect = true;
+        for (BandDto bandDto : bands) {
+            for (Artist artist : bandDto.getArtists()) {
+                if (!artist.getRole().equals("singer")) {
+                    findByRoleCorrect = false;
+                }
+            }
+        }
+        assertTrue(findByRoleCorrect);
+    }
+
+    @Test
+    void testFindByRoleException() {
+        this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                .queryParam("q", "role=singer")
+                .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testUpdateArtistsName() {
+        List<Artist> artistsBandThree = new ArrayList<>();
+        artistsBandThree.add(new Artist("Alicia Keys", LocalDateTime.now(), "singer"));
+        BandBasicDto bandBasicDto = createBand("band-4", artistsBandThree);
+        BandDto bandDto = this.webTestClient
+                .patch().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, bandBasicDto.getId())
+                .body(BodyInserters.fromObject(new BandPatchDto("Alicia Keys", "Alicia K")))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(BandDto.class)
+                .returnResult().getResponseBody();
+        assertEquals("Alicia K", bandDto.getArtists().get(0).getName());
+    }
+
+    @Test
+    void testUpdateArtistNameException() {
+        List<Artist> artistsBandThree = new ArrayList<>();
+        artistsBandThree.add(new Artist("Alicia Keys", LocalDateTime.now(), "singer"));
+        BandBasicDto bandBasicDto = createBand("band-4", artistsBandThree);
+        this.webTestClient
+                .patch().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, bandBasicDto.getId())
+                .body(BodyInserters.fromObject(new BandPatchDto("", "Alicia K")))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testUpdateArtistNameIdException() {
+        this.webTestClient
+                .patch().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, "1234")
+                .body(BodyInserters.fromObject(new BandPatchDto("Alicia Keys", "Alicia K")))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
