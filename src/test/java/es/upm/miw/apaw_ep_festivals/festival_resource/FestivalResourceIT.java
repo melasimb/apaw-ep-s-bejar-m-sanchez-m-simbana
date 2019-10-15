@@ -1,6 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.festival_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
+import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ApiTestConfig
@@ -20,7 +22,7 @@ class FestivalResourceIT {
     FestivalBasicDto createFestival(String name) {
         FestivalBasicDto festivalBasicDto = this.webTestClient
                 .post().uri(FestivalResource.FESTIVALS)
-                .body(BodyInserters.fromObject(new FestivalCreationDto(name, 40.00, LocalDateTime.now(), LocalDateTime.now(), "Madrid")))
+                .body(BodyInserters.fromObject(new FestivalBasicDto(name, 40.00, LocalDateTime.now(), LocalDateTime.now(), "Madrid")))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(FestivalBasicDto.class)
@@ -36,7 +38,7 @@ class FestivalResourceIT {
 
     @Test
     void testCreateFestivalException() {
-        FestivalCreationDto festivalCreationDto = new FestivalCreationDto("", 20.00, null, null, "Barcelona");
+        FestivalBasicDto festivalCreationDto = new FestivalBasicDto("", 20.00, null, null, "Barcelona");
         this.webTestClient
                 .post().uri(FestivalResource.FESTIVALS)
                 .body(BodyInserters.fromObject(festivalCreationDto))
@@ -59,5 +61,24 @@ class FestivalResourceIT {
                 .delete().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID, "")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testCreateSpectator() {
+        FestivalBasicDto festivalBasicDto = this.createFestival("festival-3");
+        LocalDateTime birthday = LocalDateTime.now();
+        SpectatorDto spectatorDto = new SpectatorDto("spectator-1", "spectator-1-surname", birthday);
+        FestivalFullDto festivalFullDto = this.webTestClient
+                .post().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID + FestivalResource.SPECTATORS, festivalBasicDto.getId())
+                .body(BodyInserters.fromObject(spectatorDto))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(FestivalFullDto.class).returnResult().getResponseBody();
+        String nameSpectator = festivalFullDto.getSpectators().get(0).getName();
+        String surnameSpectator = festivalFullDto.getSpectators().get(0).getSurname();
+        String birthdaySpectator = festivalFullDto.getSpectators().get(0).getBirthday().toString();
+        assertEquals("spectator-1", nameSpectator);
+        assertEquals("spectator-1-surname", surnameSpectator);
+        assertEquals(birthday.toString(), birthdaySpectator);
     }
 }
