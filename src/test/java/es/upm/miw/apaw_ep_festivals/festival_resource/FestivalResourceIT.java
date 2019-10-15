@@ -18,14 +18,13 @@ class FestivalResourceIT {
     private WebTestClient webTestClient;
 
     FestivalBasicDto createFestival(String name) {
-        FestivalBasicDto festivalBasicDto = this.webTestClient
+        return this.webTestClient
                 .post().uri(FestivalResource.FESTIVALS)
                 .body(BodyInserters.fromObject(new FestivalCreationDto(name, 40.00, LocalDateTime.now(), LocalDateTime.now(), "Madrid")))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(FestivalBasicDto.class)
                 .returnResult().getResponseBody();
-        return festivalBasicDto;
     }
 
     @Test

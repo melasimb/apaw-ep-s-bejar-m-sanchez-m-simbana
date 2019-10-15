@@ -32,28 +32,28 @@ public class Zone {
         return name;
     }
 
-    public String getGenre() {
-        return genre;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public Boolean getAdaptedDisabled() {
-        return adaptedDisabled;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 
     public void setGenre(String genre) {
         this.genre = genre;
     }
 
+    public Integer getCapacity() {
+        return capacity;
+    }
+
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public Boolean getAdaptedDisabled() {
+        return adaptedDisabled;
     }
 
     public void setAdaptedDisabled(Boolean adaptedDisabled) {
