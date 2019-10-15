@@ -58,7 +58,7 @@ public class BandBusinessController {
         return this.bandDao.findById(id).orElseThrow(() -> new NotFoundException("Band id: " + id));
     }
 
-    public void patch(String id, BandPatchDto bandPatchDto) {
+    public BandDto updateArtistsName(String id, BandPatchDto bandPatchDto) {
         Band band = this.findBandByIdAssured(id);
         List<Artist> artists = band.getArtists().stream().map(artist -> {
             if (artist.getName().equals(bandPatchDto.getOldName())) {
@@ -68,5 +68,6 @@ public class BandBusinessController {
         }).collect(Collectors.toList());
         band.setArtists(artists);
         this.bandDao.save(band);
+        return new BandDto(band);
     }
 }
