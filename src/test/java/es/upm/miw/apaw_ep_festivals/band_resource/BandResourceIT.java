@@ -68,7 +68,7 @@ class BandResourceIT {
         LocalDateTime birthday = LocalDateTime.of(1995, 4, 17, 11, 0);
         artists.add(new Artist("Alecia Beth", birthday, "singer"));
         BandBasicDto bandBasicDto = this.createBand("Pink", artists);
-        assertEquals(bandBasicDto.getName(), "Pink");
+        assertEquals("Pink", bandBasicDto.getName());
     }
 
     @Test
