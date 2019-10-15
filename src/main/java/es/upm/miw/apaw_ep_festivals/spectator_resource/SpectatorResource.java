@@ -1,5 +1,6 @@
 package es.upm.miw.apaw_ep_festivals.spectator_resource;
 
+import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
