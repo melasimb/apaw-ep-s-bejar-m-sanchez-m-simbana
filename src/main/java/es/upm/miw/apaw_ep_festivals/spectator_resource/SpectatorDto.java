@@ -1,6 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.spectator_resource;
 
 import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
+import es.upm.miw.apaw_ep_festivals.spectator_data.Spectator;
 
 import java.time.LocalDateTime;
 

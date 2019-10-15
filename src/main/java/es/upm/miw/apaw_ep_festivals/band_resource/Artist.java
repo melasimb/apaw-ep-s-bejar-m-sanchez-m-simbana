@@ -8,12 +8,12 @@ public class Artist {
 
     private LocalDateTime birthday;
 
-    private String rol;
+    private String role;
 
-    public Artist(String name, LocalDateTime birthday, String rol) {
+    public Artist(String name, LocalDateTime birthday, String role) {
         this.name = name;
         this.birthday = birthday;
-        this.rol = rol;
+        this.role = role;
     }
 
     public String getName() {
@@ -32,12 +32,12 @@ public class Artist {
         this.birthday = birthday;
     }
 
-    public String getRol() {
-        return rol;
+    public String getRole() {
+        return role;
     }
 
-    public void setRol(String rol) {
-        this.rol = rol;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Artist {
         return "Artist{" +
                 "name='" + name + '\'' +
                 ", birthday=" + birthday +
-                ", rol='" + rol + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

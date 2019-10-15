@@ -1,40 +1,43 @@
 package es.upm.miw.apaw_ep_festivals.band_resource;
 
 import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Document
-public class Band {
+public class BandDto {
 
-    @Id
     private String id;
 
     private String name;
 
     private List<Artist> artists;
 
-    @DBRef
     private List<Concert> concerts;
 
-    public Band(String name, List<Artist> artists, List<Concert> concerts) {
+    public BandDto() {
+        // Empty for framework
+    }
+
+    public BandDto(String name, List<Artist> artists, List<Concert> concerts) {
         this.name = name;
         this.artists = artists;
         this.concerts = concerts;
     }
 
-    public Band(String name, List<Artist> artists) {
-        this.name = name;
-        this.artists = artists;
-        this.concerts = new ArrayList<>();
+    public BandDto(Band band) {
+        this.id = band.getId();
+        this.name = band.getName();
+        this.artists = band.getArtists();
+        this.concerts = band.getConcerts();
     }
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -61,9 +64,15 @@ public class Band {
         this.artists = artists;
     }
 
+    public void validate() {
+        if (this.name == null || this.name.isEmpty() || this.artists == null) {
+            throw new BadRequestException("Incomplete BandDto");
+        }
+    }
+
     @Override
     public String toString() {
-        return "Band{" +
+        return "BandDto{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", artists=" + artists +

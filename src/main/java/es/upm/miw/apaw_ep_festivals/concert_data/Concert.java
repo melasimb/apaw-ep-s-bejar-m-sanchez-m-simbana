@@ -1,4 +1,4 @@
-package es.upm.miw.apaw_ep_festivals.condert_data;
+package es.upm.miw.apaw_ep_festivals.concert_data;
 
 import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 import org.springframework.data.annotation.Id;
