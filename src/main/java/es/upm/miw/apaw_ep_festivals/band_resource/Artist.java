@@ -10,6 +10,8 @@ public class Artist {
 
     private String role;
 
+    public Artist(){}
+
     public Artist(String name, LocalDateTime birthday, String role) {
         this.name = name;
         this.birthday = birthday;

@@ -1,8 +1,10 @@
 package es.upm.miw.apaw_ep_festivals.band_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
+import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
 import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertDto;
 import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertResource;
+import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneDto;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneResource;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ApiTestConfig
 class BandResourceIT {
@@ -55,6 +59,7 @@ class BandResourceIT {
                 .expectStatus().isOk()
                 .expectBody(BandBasicDto.class)
                 .returnResult().getResponseBody();
+
     }
 
     @Test
@@ -62,7 +67,8 @@ class BandResourceIT {
         List<Artist> artists = new ArrayList<>();
         LocalDateTime birthday = LocalDateTime.of(1995, 4, 17, 11, 0);
         artists.add(new Artist("Alecia Beth", birthday, "singer"));
-        this.createBand("Pink", artists);
+        BandBasicDto bandBasicDto = this.createBand("Pink", artists);
+        assertEquals(bandBasicDto.getName(), "Pink");
     }
 
     @Test
@@ -100,5 +106,22 @@ class BandResourceIT {
                 .body(BodyInserters.fromObject(new BandCreationDto("Pink", artists, concertsId)))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testClassBand() {
+        Band band = new Band("Bowling for soup", null, null);
+        LocalDateTime birthday = LocalDateTime.of(1982, 4, 17, 5, 0);
+        LocalDateTime concertDate = LocalDateTime.of(2019, 7, 12, 18, 45);
+        List<Artist> artist = new ArrayList<>();
+        artist.add(new Artist("Dave", birthday, "singer"));
+        band.setArtists(artist);
+        List<Concert> concerts = new ArrayList<>();
+        concerts.add(new Concert(concertDate, 33, new Zone("Zone Pop", "pop", 1000, false)));
+        band.setConcerts(concerts);
+        band.setName("Bowling For Soup");
+        assertEquals(concerts, band.getConcerts());
+        assertEquals(artist, band.getArtists());
+        assertEquals("Bowling For Soup", band.getName());
     }
 }
