@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ApiTestConfig
 class BandResourceIT {
@@ -65,15 +66,12 @@ class BandResourceIT {
         List<Artist> artistsBandOne = new ArrayList<>();
         artistsBandOne.add(new Artist("Alecia Beth", LocalDateTime.now(), "singer"));
         createBand("band-1", artistsBandOne);
-
         List<Artist> artistsBandTwo = new ArrayList<>();
         artistsBandTwo.add(new Artist("Carlos Santana", LocalDateTime.now(), "guitar player"));
         createBand("band-2", artistsBandTwo);
-
         List<Artist> artistsBandThree = new ArrayList<>();
         artistsBandThree.add(new Artist("Alicia Keys", LocalDateTime.now(), "singer"));
         createBand("band-3", artistsBandThree);
-
         List<BandDto> bands = this.webTestClient
                 .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
                         .queryParam("q", "role:singer")
@@ -83,16 +81,11 @@ class BandResourceIT {
                 .expectBodyList(BandDto.class)
                 .returnResult().getResponseBody();
         assertFalse(bands.isEmpty());
-
-        boolean findByRoleCorrect = true;
-        for (BandDto bandDto : bands) {
-            for (Artist artist : bandDto.getArtists()) {
-                if (!artist.getRole().equals("singer")) {
-                    findByRoleCorrect = false;
-                }
-            }
-        }
-        assertTrue(findByRoleCorrect);
+        String roleBandOne = bands.get(0).getArtists().get(0).getRole();
+        String roleBandThree = bands.get(1).getArtists().get(0).getRole();
+        assertEquals(2, bands.size());
+        assertEquals("singer", roleBandOne);
+        assertEquals("singer", roleBandThree);
     }
 
     @Test
