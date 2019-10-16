@@ -42,8 +42,7 @@ public class BandBusinessController {
     }
 
     public List<BandDto> findByRole(String role) {
-        List<BandDto> bandDtos = this.bandDao.findAll().stream().filter(band -> this.findBandByRole(band, role) == true).map(BandDto::new).collect(Collectors.toList());
-        return bandDtos;
+        return this.bandDao.findAll().stream().filter(band -> this.findBandByRole(band, role)).map(BandDto::new).collect(Collectors.toList());
     }
 
     private Band findBandByIdAssured(String id) {
