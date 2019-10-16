@@ -36,21 +36,13 @@ public class BandBusinessController {
         return new BandBasicDto(band);
     }
 
+    public Boolean findBandByRole(Band band, String role) {
+        List<Artist> artists = band.getArtists().stream().filter(artist -> artist.getRole().equals(role)).collect(Collectors.toList());
+        return !artists.isEmpty();
+    }
+
     public List<BandDto> findByRole(String role) {
-        List<BandDto> bandDtos = new ArrayList<>();
-        List<Band> bands = this.bandDao.findAll();
-        for (Band band : bands) {
-            boolean add = false;
-            List<Artist> artists = band.getArtists();
-            for (Artist artist : artists) {
-                if (artist.getRole().equals(role)) {
-                    add = true;
-                }
-            }
-            if (add) {
-                bandDtos.add(new BandDto(band));
-            }
-        }
+        List<BandDto> bandDtos = this.bandDao.findAll().stream().filter(band -> this.findBandByRole(band, role) == true).map(BandDto::new).collect(Collectors.toList());
         return bandDtos;
     }
 
