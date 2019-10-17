@@ -1,4 +1,4 @@
-package es.upm.miw.apaw_ep_festivals.spectator_resource;
+package es.upm.miw.apaw_ep_festivals.spectator_data;
 
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
