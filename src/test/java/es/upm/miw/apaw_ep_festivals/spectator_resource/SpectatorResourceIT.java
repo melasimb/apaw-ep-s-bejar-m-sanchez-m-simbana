@@ -81,7 +81,7 @@ public class SpectatorResourceIT {
     }
 
     @Test
-    void testPatchSpectator() {
+    void testPatchSpectatorSurname() {
         String id = createSpectator("Melany", "Martinez", LocalDateTime.now()).getId();
         this.webTestClient
                 .patch().uri(SpectatorResource.SPECTATORS + SpectatorResource.ID_ID, id)
@@ -91,10 +91,39 @@ public class SpectatorResourceIT {
     }
 
     @Test
+    void testPatchSpectatorName() {
+        String id = createSpectator("Pepito", "Grillo", LocalDateTime.now()).getId();
+        this.webTestClient
+                .patch().uri(SpectatorResource.SPECTATORS + SpectatorResource.ID_ID, id)
+                .body(BodyInserters.fromObject(new SpectatorPatchDto("name", "Tristón")))
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testPatchSpectatorBirthday() {
+        String id = createSpectator("Pepito", "Grillo", LocalDateTime.now()).getId();
+        this.webTestClient
+                .patch().uri(SpectatorResource.SPECTATORS + SpectatorResource.ID_ID, id)
+                .body(BodyInserters.fromObject(new SpectatorPatchDto("birthday", "2007-12-03T10:15:30")))
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
     void testPatchSpectatorNotFoundException() {
         this.webTestClient
                 .patch().uri(SpectatorResource.SPECTATORS + SpectatorResource.ID_ID, "no")
                 .body(BodyInserters.fromObject(new SpectatorPatchDto("name", "other")))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testPatchSpectatorNotFoundExceptionPath() {
+        this.webTestClient
+                .patch().uri(SpectatorResource.SPECTATORS + SpectatorResource.ID_ID, "no")
+                .body(BodyInserters.fromObject(new SpectatorPatchDto("adios", "other")))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
