@@ -1,11 +1,14 @@
 package es.upm.miw.apaw_ep_festivals.zone_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
+import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -72,6 +75,54 @@ class ZoneResourceIT {
         this.webTestClient
                 .put().uri(ZoneResource.ZONES + ZoneResource.ID_ID, "noId")
                 .body(BodyInserters.fromObject(zoneDto))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    ConcertDto createConcert(LocalDateTime date) {
+        ZoneDto zoneDto = new ZoneDto("Zone C", "Latin", 5000, true);
+
+        String zoneId = this.webTestClient
+                .post().uri(ZoneResource.ZONES)
+                .body(BodyInserters.fromObject(zoneDto))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ZoneDto.class)
+                .returnResult().getResponseBody().getId();
+
+        ConcertDto concertDto = this.webTestClient
+                .post().uri("/concerts")
+                .body(BodyInserters.fromObject(new ConcertDto(date, 120, zoneId)))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ConcertDto.class)
+                .returnResult().getResponseBody();
+
+        return concertDto;
+    }
+
+    @Test
+    void testDeleteZone() {
+        String id = createZone("Zone S").getId();
+        this.webTestClient
+                .delete().uri(ZoneResource.ZONES + ZoneResource.ID_ID, id)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testDeleteZoneBadRequestException() {
+        String id = createConcert(LocalDateTime.now()).getZoneId();
+        this.webTestClient
+                .delete().uri(ZoneResource.ZONES + ZoneResource.ID_ID, id)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testDeleteZoneNotFoundException() {
+        this.webTestClient
+                .delete().uri(ZoneResource.ZONES + ZoneResource.ID_ID, "no id")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }

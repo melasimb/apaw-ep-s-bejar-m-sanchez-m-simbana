@@ -1,5 +1,6 @@
 package es.upm.miw.apaw_ep_festivals.concert_resource;
 
+import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
 import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
 
 import java.time.LocalDateTime;

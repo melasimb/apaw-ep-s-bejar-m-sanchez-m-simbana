@@ -30,15 +30,13 @@ class ConcertResourceIT {
                 .expectBody(ZoneDto.class)
                 .returnResult().getResponseBody().getId();
 
-        ConcertDto concertDto = this.webTestClient
+        return this.webTestClient
                 .post().uri(ConcertResource.CONCERTS)
                 .body(BodyInserters.fromObject(new ConcertDto(date, 120, zoneId)))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ConcertDto.class)
                 .returnResult().getResponseBody();
-
-        return concertDto;
     }
 
     @Test

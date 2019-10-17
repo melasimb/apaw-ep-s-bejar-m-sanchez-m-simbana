@@ -1,4 +1,4 @@
-package es.upm.miw.apaw_ep_festivals.spectator_resource;
+package es.upm.miw.apaw_ep_festivals.spectator_data;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
