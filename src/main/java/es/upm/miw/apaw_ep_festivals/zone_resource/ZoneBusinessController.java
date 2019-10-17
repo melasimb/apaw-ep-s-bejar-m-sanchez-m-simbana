@@ -48,8 +48,7 @@ public class ZoneBusinessController {
         List<Concert> concertList = this.concertDao.findAll().stream()
                 .filter(concert -> concert.getZone().getId().equals(id))
                 .collect(Collectors.toList());
-        System.out.println(concertList);
-        if (concertList.size() != 0) {
+        if (!concertList.isEmpty()) {
             throw new BadRequestException("Zone with id: " + id + " can't be deleted because it is assigned to a concert.");
         } else {
             this.zoneDao.delete(zone);
