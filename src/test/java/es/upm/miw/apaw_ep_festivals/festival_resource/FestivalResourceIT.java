@@ -59,4 +59,42 @@ class FestivalResourceIT {
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
+    @Test
+    void testSearchConcertsAdaptedDisabledNotFoundException() {
+        String id = "no";
+        this.webTestClient
+                .get().uri(uriBuilder ->
+                uriBuilder.path(FestivalResource.FESTIVALS + "/" + id + FestivalResource.CONCERTS + FestivalResource.SEARCH)
+                        .queryParam("q", "zone.adaptedDisabled:true")
+                        .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testSearchConcertsAdaptedDisabledBadRequestException() {
+        String id = "no";
+        this.webTestClient
+                .get().uri(uriBuilder ->
+                uriBuilder.path(FestivalResource.FESTIVALS + "/" + id + FestivalResource.CONCERTS + FestivalResource.SEARCH)
+                        .queryParam("q", "no")
+                        .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testSearchConcertsAdaptedDisabledEmpty() {
+        FestivalBasicDto festivalBasicDto = createFestival("Viña Rock");
+        String id = festivalBasicDto.getId();
+        this.webTestClient
+                .get().uri(uriBuilder ->
+                uriBuilder.path(FestivalResource.FESTIVALS + "/" + id + FestivalResource.CONCERTS + FestivalResource.SEARCH)
+                        .queryParam("q", "zone.adaptedDisabled:true")
+                        .build())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
 }
