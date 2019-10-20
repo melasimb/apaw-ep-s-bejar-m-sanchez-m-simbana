@@ -17,11 +17,9 @@ public class RequestBusinessController {
     public void patch(String id, RequestPatchDto requestPatchDto) {
         Request request = this.requestDao.findById(id).orElseThrow(() -> new NotFoundException("Request id: " + id));
         if (requestPatchDto.getTitle() != null && !requestPatchDto.getTitle().isEmpty()) {
-            System.out.println("Change title: " + requestPatchDto.getTitle());
             request.setTitle(requestPatchDto.getTitle());
         }
         if (requestPatchDto.getDescription() != null && !requestPatchDto.getDescription().isEmpty()) {
-            System.out.println("Change description: " + requestPatchDto.getDescription());
             request.setDescription(requestPatchDto.getDescription());
         }
 
