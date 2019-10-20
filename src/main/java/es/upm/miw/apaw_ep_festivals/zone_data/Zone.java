@@ -17,6 +17,9 @@ public class Zone {
 
     private Boolean adaptedDisabled;
 
+    public Zone() {
+    }
+
     public Zone(String name, String genre, Integer capacity, Boolean adaptedDisabled) {
         this.name = name;
         this.genre = genre;

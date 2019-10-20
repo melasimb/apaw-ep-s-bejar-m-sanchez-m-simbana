@@ -6,6 +6,7 @@ import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,5 +66,12 @@ public class BandBusinessController {
     public void delete(String id) {
         Band band = this.findBandByIdAssured(id);
         this.bandDao.delete(band);
+    }
+
+    public List<BandDto> findByConcertDate(LocalDateTime concertDate) {
+        return this.bandDao.findAll().stream()
+                .filter((band) -> band.getConcerts().stream().anyMatch((concert -> concert.getDate().getDayOfYear() == concertDate.getDayOfYear())))
+                .map(BandDto::new)
+                .collect(Collectors.toList());
     }
 }
