@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ApiTestConfig
 class BandResourceIT {
@@ -195,5 +194,58 @@ class BandResourceIT {
         assertEquals(concerts, band.getConcerts());
         assertEquals(artist, band.getArtists());
         assertEquals("Bowling For Soup", band.getName());
+    }
+
+    @Test
+    void testGetArtistsNotFoundException() {
+        this.webTestClient
+                .get().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, "no")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testGetArtistsOfBand() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthdayFlea = LocalDateTime.of(1962, 11, 1, 5, 0);
+        LocalDateTime birthdayAnthony = LocalDateTime.of(1962, 10, 16, 5, 0);
+        LocalDateTime birthdayChard = LocalDateTime.of(1961, 10, 25, 5, 0);
+        LocalDateTime birthdayJosh = LocalDateTime.of(1979, 10, 3, 5, 0);
+        artists.add(new Artist("Anthony Kiedis", birthdayAnthony, "singer"));
+        artists.add(new Artist("Flea", birthdayFlea, "guitarist"));
+        artists.add(new Artist("Chard Smith", birthdayChard, "drummer"));
+        artists.add(new Artist("Josh Klinghoffer", birthdayJosh, "multi instrument"));
+        String id = createBand("Red Hot Chilli Peppers", artists).getId();
+        List<Artist> artistsReturned = this.webTestClient
+                .get().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, id)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Artist.class)
+                .returnResult().getResponseBody();
+        assertTrue(artists.toString().equals(artistsReturned.toString()));
+    }
+
+    @Test
+    void testDeleteBand() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthdayFirstSinger = LocalDateTime.of(1980, 5, 24, 5, 17);
+        LocalDateTime birthdaySecondSinger = LocalDateTime.of(1979, 8, 3, 20, 30);
+        artists.add(new Artist("Nick Thomas", birthdayFirstSinger, "singer"));
+        artists.add(new Artist("Chris Salish", birthdaySecondSinger, "singer"));
+        LocalDateTime concertDate = LocalDateTime.of(2019, 11, 28, 23, 45);
+
+        String idBand = this.createBand("Twenty One Pilots", artists, concertDate, 30).getId();
+        this.webTestClient
+                .delete().uri(BandResource.BANDS + BandResource.ID_ID, idBand)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testDeleteBandNotFoundException() {
+        this.webTestClient
+                .delete().uri(BandResource.BANDS + BandResource.ID_ID, "id not found")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

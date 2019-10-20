@@ -1,6 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.spectator_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
+import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
