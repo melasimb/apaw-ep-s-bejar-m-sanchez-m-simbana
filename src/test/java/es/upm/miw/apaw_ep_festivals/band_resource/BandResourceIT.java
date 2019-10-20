@@ -260,6 +260,35 @@ class BandResourceIT {
     }
 
     @Test
+    void testGetArtistsNotFoundException() {
+        this.webTestClient
+                .get().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, "no")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testGetArtistsOfBand() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthdayFlea = LocalDateTime.of(1962, 11, 1, 5, 0);
+        LocalDateTime birthdayAnthony = LocalDateTime.of(1962, 10, 16, 5, 0);
+        LocalDateTime birthdayChard = LocalDateTime.of(1961, 10, 25, 5, 0);
+        LocalDateTime birthdayJosh = LocalDateTime.of(1979, 10, 3, 5, 0);
+        artists.add(new Artist("Anthony Kiedis", birthdayAnthony, "singer"));
+        artists.add(new Artist("Flea", birthdayFlea, "guitarist"));
+        artists.add(new Artist("Chard Smith", birthdayChard, "drummer"));
+        artists.add(new Artist("Josh Klinghoffer", birthdayJosh, "multi instrument"));
+        String id = createBand("Red Hot Chilli Peppers", artists).getId();
+        List<Artist> artistsReturned = this.webTestClient
+                .get().uri(BandResource.BANDS + BandResource.ID_ID + BandResource.ARTISTS, id)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Artist.class)
+                .returnResult().getResponseBody();
+        assertTrue(artists.toString().equals(artistsReturned.toString()));
+    }
+
+    @Test
     void testDeleteBand() {
         List<Artist> artists = new ArrayList<>();
         LocalDateTime birthdayFirstSinger = LocalDateTime.of(1980, 5, 24, 5, 17);

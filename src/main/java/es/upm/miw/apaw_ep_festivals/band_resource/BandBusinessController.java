@@ -63,6 +63,11 @@ public class BandBusinessController {
         return new BandDto(band);
     }
 
+    public List<Artist> getArtists(String id) {
+        Band band = this.findBandByIdAssured(id);
+        return band.getArtists();
+    }
+
     public void delete(String id) {
         Band band = this.findBandByIdAssured(id);
         this.bandDao.delete(band);
