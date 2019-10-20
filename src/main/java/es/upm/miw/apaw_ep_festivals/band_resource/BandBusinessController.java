@@ -61,4 +61,9 @@ public class BandBusinessController {
         this.bandDao.save(band);
         return new BandDto(band);
     }
+
+    public List<Artist> getArtists(String id) {
+        Band band = this.findBandByIdAssured(id);
+        return band.getArtists();
+    }
 }

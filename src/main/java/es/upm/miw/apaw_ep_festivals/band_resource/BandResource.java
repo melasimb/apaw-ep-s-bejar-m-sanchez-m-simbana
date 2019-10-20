@@ -41,4 +41,9 @@ public class BandResource {
         bandPatchDto.validate();
         return this.bandBusinessController.updateArtistsName(id, bandPatchDto);
     }
+
+    @GetMapping(value = ID_ID + ARTISTS)
+    public List<Artist> getArtistsByIdBand(@PathVariable String id) {
+        return this.bandBusinessController.getArtists(id);
+    }
 }
