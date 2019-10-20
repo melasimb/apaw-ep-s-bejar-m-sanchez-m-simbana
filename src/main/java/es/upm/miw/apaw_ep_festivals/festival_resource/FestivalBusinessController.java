@@ -33,10 +33,6 @@ public class FestivalBusinessController {
         return new FestivalBasicDto(festival);
     }
 
-    public void delete(String id) {
-        this.festivalDao.deleteById(id);
-    }
-
     public Festival findFestivalByIdAssured(String id) {
         return this.festivalDao.findById(id).orElseThrow(() -> new NotFoundException("Festival id: " + id));
     }
@@ -54,5 +50,9 @@ public class FestivalBusinessController {
         return festival.getConcerts().stream()
                 .filter(concert -> concert.getZone().getAdaptedDisabled())
                 .collect(Collectors.toList());
+    }
+
+    public void delete(String id) {
+        this.festivalDao.deleteById(id);
     }
 }
