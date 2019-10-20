@@ -23,6 +23,9 @@ public class Spectator {
         this.birthday = birthday;
     }
 
+    public Spectator() {
+    }
+
     public String getId() {
         return id;
     }
