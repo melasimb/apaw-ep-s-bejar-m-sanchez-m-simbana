@@ -5,11 +5,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Document
 public class Band {
+
     @Id
     private String id;
 
@@ -20,10 +20,10 @@ public class Band {
     @DBRef
     private List<Concert> concerts;
 
-    public Band(String name, List<Artist> artists) {
+    public Band(String name, List<Artist> artists, List<Concert> concerts) {
         this.name = name;
         this.artists = artists;
-        this.concerts = new ArrayList<>();
+        this.concerts = concerts;
     }
 
     public String getId() {

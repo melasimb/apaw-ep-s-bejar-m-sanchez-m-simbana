@@ -28,4 +28,9 @@ public class ZoneResource {
         zoneDto.validate();
         this.zoneBusinessController.update(id, zoneDto);
     }
+
+    @DeleteMapping(value = ID_ID)
+    public void delete(@PathVariable String id) {
+        this.zoneBusinessController.delete(id);
+    }
 }

@@ -12,7 +12,8 @@ public class BandResource {
 
     public static final String BANDS = "/bands";
     public static final String SEARCH = "/search";
-    public static final String ID_ID = "{id}";
+    public static final String ID_ID = "/{id}";
+    public static final String ARTISTS = "/artists";
 
     private BandBusinessController bandBusinessController;
 
@@ -21,17 +22,28 @@ public class BandResource {
         this.bandBusinessController = bandBusinessController;
     }
 
-    @GetMapping(value = SEARCH)
-    public List<BandDto> find(@RequestParam String q) {
-        if (!"role".equals(q.split(":=")[0])) {
-            throw new BadRequestException("query param role is incorrect");
-        }
-        return this.bandBusinessController.findByRole(q.split(":=")[1]);
+    @PostMapping
+    public BandBasicDto create(@RequestBody(required = false) BandCreationDto bandCreationDto) {
+        bandCreationDto.validate();
+        return this.bandBusinessController.create(bandCreationDto);
     }
 
-    @PatchMapping(value = ID_ID)
-    public void patch(@PathVariable String id, @RequestBody BandPatchDto bandPatchDto) {
+    @GetMapping(value = SEARCH)
+    public List<BandDto> findByRole(@RequestParam String q) {
+        if (!"role".equals(q.split(":")[0])) {
+            throw new BadRequestException("query param role is incorrect");
+        }
+        return this.bandBusinessController.findByRole(q.split(":")[1]);
+    }
+
+    @PatchMapping(value = ID_ID + ARTISTS)
+    public BandDto updateArtistsName(@PathVariable String id, @RequestBody BandPatchDto bandPatchDto) {
         bandPatchDto.validate();
-        this.bandBusinessController.patch(id, bandPatchDto);
+        return this.bandBusinessController.updateArtistsName(id, bandPatchDto);
+    }
+
+    @DeleteMapping(value = ID_ID)
+    public void delete(@PathVariable String id) {
+        this.bandBusinessController.delete(id);
     }
 }

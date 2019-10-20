@@ -28,4 +28,10 @@ public class SpectatorResource {
     public SpectatorDto readSpectator(@PathVariable String id) {
         return this.spectatorBusinessController.readSpectator(id);
     }
+
+    @PatchMapping(value = ID_ID)
+    public void patch(@PathVariable String id, @RequestBody SpectatorPatchDto spectatorPatchDto) {
+        spectatorPatchDto.validate();
+        this.spectatorBusinessController.patch(id, spectatorPatchDto);
+    }
 }

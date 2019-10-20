@@ -1,11 +1,14 @@
 package es.upm.miw.apaw_ep_festivals.spectator_resource;
 
+import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
 import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
 import es.upm.miw.apaw_ep_festivals.spectator_data.Spectator;
 import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDao;
 import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class SpectatorBusinessController {
@@ -29,5 +32,23 @@ public class SpectatorBusinessController {
 
     private Spectator findSpectatorByIdAssured(String id) {
         return this.spectatorDao.findById(id).orElseThrow(() -> new NotFoundException("Spectator id: " + id));
+    }
+
+    public void patch(String id, SpectatorPatchDto spectatorPatchDto) {
+        Spectator spectator = this.findSpectatorByIdAssured(id);
+        switch (spectatorPatchDto.getPath()) {
+            case "name":
+                spectator.setName(spectatorPatchDto.getNewValue());
+                break;
+            case "surname":
+                spectator.setSurname(spectatorPatchDto.getNewValue());
+                break;
+            case "birthday":
+                spectator.setBirthday(LocalDateTime.parse(spectatorPatchDto.getNewValue()));
+                break;
+            default:
+                throw new BadRequestException("SpectatorPatchDto is invalid");
+        }
+        this.spectatorDao.save(spectator);
     }
 }
