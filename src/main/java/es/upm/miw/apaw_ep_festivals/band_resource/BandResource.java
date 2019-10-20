@@ -41,4 +41,9 @@ public class BandResource {
         bandPatchDto.validate();
         return this.bandBusinessController.updateArtistsName(id, bandPatchDto);
     }
+
+    @DeleteMapping(value = ID_ID)
+    public void delete(@PathVariable String id) {
+        this.bandBusinessController.delete(id);
+    }
 }
