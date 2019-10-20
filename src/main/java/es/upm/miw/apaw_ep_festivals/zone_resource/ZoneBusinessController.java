@@ -8,6 +8,8 @@ import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.EmitterProcessor;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,17 +19,25 @@ public class ZoneBusinessController {
 
     private ZoneDao zoneDao;
     private ConcertDao concertDao;
+    private EmitterProcessor<String> emitter;
 
     @Autowired
     public ZoneBusinessController(ZoneDao zoneDao, ConcertDao concertDao) {
         this.zoneDao = zoneDao;
         this.concertDao = concertDao;
+        this.emitter = EmitterProcessor.create();
+    }
+
+    public Flux<String> publisher() {
+        return this.emitter;
     }
 
     public ZoneDto create(ZoneDto zoneDto) {
         Zone zone = new Zone(zoneDto.getName(), zoneDto.getGenre(), zoneDto.getCapacity(), zoneDto.getAdaptedDisabled());
         this.zoneDao.save(zone);
-        return new ZoneDto(zone);
+        ZoneDto zoneDtoReturn = new ZoneDto(zone);
+        this.emitter.onNext("The following zone has been added: " + zoneDtoReturn.getBasicInformation());
+        return zoneDtoReturn;
     }
 
     private Zone findZoneByIdAssured(String id) {

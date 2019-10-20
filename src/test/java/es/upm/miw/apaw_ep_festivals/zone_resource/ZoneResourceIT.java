@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
-import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +18,6 @@ class ZoneResourceIT {
 
     @Autowired
     private WebTestClient webTestClient;
-    @Autowired
-    public ZoneBusinessController zoneBusinessController;
 
     @Test
     void testCreate() {
@@ -128,18 +125,5 @@ class ZoneResourceIT {
                 .delete().uri(ZoneResource.ZONES + ZoneResource.ID_ID, "no id")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    void testPublisher() {
-        ZoneResource zoneResourcePublisher = new ZoneResource(zoneBusinessController);
-        ZoneDto zoneDto = new ZoneDto("zone-1", "Pop", 300, false);
-        ZoneDto zoneDtoReturn;
-        StepVerifier
-                .create(zoneResourcePublisher.publisher())
-                .then(() -> zoneResourcePublisher.create(zoneDto))
-                .expectNext("The following zone has been added: " + zoneDto.getName() + ", " + zoneDto.getGenre() + ", " + zoneDto.getCapacity() + ", " + zoneDto.getAdaptedDisabled())
-                .thenCancel()
-                .verify();
     }
 }

@@ -80,6 +80,15 @@ public class ZoneDto {
         }
     }
 
+    public String getBasicInformation() {
+        return "ZoneDto{" +
+                "name='" + name + '\'' +
+                ", genre='" + genre + '\'' +
+                ", capacity=" + capacity +
+                ", adaptedDisabled=" + adaptedDisabled +
+                '}';
+    }
+
     @Override
     public String toString() {
         return "ZoneDto{" +
