@@ -46,4 +46,9 @@ public class BandResource {
     public List<Artist> getArtistsByIdBand(@PathVariable String id) {
         return this.bandBusinessController.getArtists(id);
     }
+
+    @DeleteMapping(value = ID_ID)
+    public void delete(@PathVariable String id) {
+        this.bandBusinessController.delete(id);
+    }
 }
