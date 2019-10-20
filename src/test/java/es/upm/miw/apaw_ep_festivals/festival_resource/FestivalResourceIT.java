@@ -46,23 +46,6 @@ class FestivalResourceIT {
     }
 
     @Test
-    void testDelete() {
-        FestivalBasicDto festivalBasicDto = this.createFestival("festival-2");
-        this.webTestClient
-                .delete().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID, festivalBasicDto.getId())
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
-    void testDeleteFestivalException() {
-        this.webTestClient
-                .delete().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID, "")
-                .exchange()
-                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     void testCreateSpectator() {
         FestivalBasicDto festivalBasicDto = this.createFestival("festival-3");
         LocalDateTime birthday = LocalDateTime.now();
@@ -80,6 +63,24 @@ class FestivalResourceIT {
         assertEquals("spectator-1-surname", surnameSpectator);
         assertEquals(birthday.toString(), birthdaySpectator);
     }
+
+    @Test
+    void testDelete() {
+        FestivalBasicDto festivalBasicDto = this.createFestival("festival-2");
+        this.webTestClient
+                .delete().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID, festivalBasicDto.getId())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testDeleteFestivalException() {
+        this.webTestClient
+                .delete().uri(FestivalResource.FESTIVALS + FestivalResource.ID_ID, "")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
     void testSearchConcertsAdaptedDisabledNotFoundException() {
         String id = "no";
         this.webTestClient
