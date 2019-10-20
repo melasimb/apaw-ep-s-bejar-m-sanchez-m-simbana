@@ -61,4 +61,9 @@ public class BandBusinessController {
         this.bandDao.save(band);
         return new BandDto(band);
     }
+
+    public void delete(String id) {
+        Band band = this.findBandByIdAssured(id);
+        this.bandDao.delete(band);
+    }
 }
