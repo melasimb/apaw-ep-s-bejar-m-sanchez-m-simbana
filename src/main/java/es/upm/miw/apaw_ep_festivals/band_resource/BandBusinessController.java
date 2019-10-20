@@ -75,7 +75,7 @@ public class BandBusinessController {
 
     public List<BandDto> findByConcertDate(LocalDateTime concertDate) {
         return this.bandDao.findAll().stream()
-                .filter((band) -> band.getConcerts().stream().anyMatch((concert -> concert.getDate().getDayOfYear() == concertDate.getDayOfYear())))
+                .filter(band -> band.getConcerts().stream().anyMatch((concert -> concert.getDate().getDayOfYear() == concertDate.getDayOfYear())))
                 .map(BandDto::new)
                 .collect(Collectors.toList());
     }
