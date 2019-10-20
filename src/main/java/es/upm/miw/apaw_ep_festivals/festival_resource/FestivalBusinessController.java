@@ -1,11 +1,11 @@
 package es.upm.miw.apaw_ep_festivals.festival_resource;
 
+import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
 import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
 import es.upm.miw.apaw_ep_festivals.spectator_data.Spectator;
 import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDao;
 import es.upm.miw.apaw_ep_festivals.spectator_data.SpectatorDto;
-import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
-import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -17,7 +17,6 @@ public class FestivalBusinessController {
 
     private FestivalDao festivalDao;
     private ConcertDao concertDao;
-
     private SpectatorDao spectatorDao;
 
     @Autowired
@@ -42,7 +41,7 @@ public class FestivalBusinessController {
         return this.festivalDao.findById(id).orElseThrow(() -> new NotFoundException("Festival id: " + id));
     }
 
-    public FestivalFullDto createSpectator (String id, SpectatorDto spectatorDto) {
+    public FestivalFullDto createSpectator(String id, SpectatorDto spectatorDto) {
         Festival festival = this.findFestivalByIdAssured(id);
         Spectator spectator = new Spectator(spectatorDto.getName(), spectatorDto.getSurname(), spectatorDto.getBirthday());
         this.spectatorDao.save(spectator);
