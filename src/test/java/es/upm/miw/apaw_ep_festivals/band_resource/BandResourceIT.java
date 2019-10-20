@@ -14,6 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +86,68 @@ class BandResourceIT {
         assertEquals(2, bands.size());
         assertEquals("singer", roleBandOne);
         assertEquals("singer", roleBandThree);
+    }
+
+    @Test
+    void testFindByConcertDate() {
+        LocalDateTime dateQueryParam = LocalDateTime.of(2019, 11, 24, 0, 0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateQueryParam = dateQueryParam.format(dateTimeFormatter);
+
+        List<Artist> artistsScorpions = new ArrayList<>();
+        artistsScorpions.add(new Artist("Klaus Miller", LocalDateTime.now(), "main singer"));
+        LocalDateTime ScorpionsConcertDate = LocalDateTime.of(2019, 11, 24, 22, 45);
+        createBand("Scorpions", artistsScorpions, ScorpionsConcertDate, 120);
+
+        List<Artist> artistsTheCure = new ArrayList<>();
+        artistsTheCure.add(new Artist("Robert Smith", LocalDateTime.now(), "main singer"));
+        LocalDateTime TheCureConcertDate = LocalDateTime.of(2019, 12, 12, 22, 45);
+        createBand("The Cure", artistsTheCure, TheCureConcertDate, 120);
+
+        List<Artist> artistsTheOffspring = new ArrayList<>();
+        artistsTheOffspring.add(new Artist("Dexter Holland", LocalDateTime.now(), "main singer"));
+        LocalDateTime OffspringConcertDate = LocalDateTime.of(2019, 11, 24, 23, 45);
+        createBand("The Offspring", artistsTheOffspring, OffspringConcertDate, 135);
+
+        List<BandDto> bands = this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                        .queryParam("q", "concerts.date:" + formattedDateQueryParam)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BandDto.class)
+                .returnResult().getResponseBody();
+        assertFalse(bands.isEmpty());
+        assertEquals(2, bands.size());
+        assertTrue(bands.stream().anyMatch((bandDto -> bandDto.getName().equals("The Offspring"))));
+        assertTrue(bands.stream().anyMatch((bandDto -> bandDto.getName().equals("Scorpions"))));
+    }
+
+    @Test
+    void testFindByConcertDateException() {
+        this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                .queryParam("q", "concerts.date:" + "bad formatted date")
+                .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testFindByConcertDateEmptyResponse() {
+        LocalDateTime dateQueryParam = LocalDateTime.of(2020, 10, 8, 0, 0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateQueryParam = dateQueryParam.format(dateTimeFormatter);
+
+        List<BandDto> bands = this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                        .queryParam("q", "concerts.date:" + formattedDateQueryParam)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BandDto.class)
+                .returnResult().getResponseBody();
+        assertTrue(bands.isEmpty());
     }
 
     @Test

@@ -4,6 +4,8 @@ import es.upm.miw.apaw_ep_festivals.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -29,11 +31,24 @@ public class BandResource {
     }
 
     @GetMapping(value = SEARCH)
-    public List<BandDto> findByRole(@RequestParam String q) {
-        if (!"role".equals(q.split(":")[0])) {
-            throw new BadRequestException("query param role is incorrect");
+    public List<BandDto> find(@RequestParam String q) {
+        List<BandDto> bands;
+        switch (q.split(":")[0]) {
+            case "role":
+                bands = this.bandBusinessController.findByRole(q.split(":")[1]);
+                break;
+            case "concerts.date":
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                if (!q.split(":", 2)[1].matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}")) {
+                    throw new BadRequestException("date format is not correct (yyyy-MM-dd HH:mm)");
+                }
+                LocalDateTime date = LocalDateTime.parse(q.split(":", 2)[1], dateTimeFormatter);
+                bands = this.bandBusinessController.findByConcertDate(date);
+                break;
+            default:
+                throw new BadRequestException("query param is incorrect");
         }
-        return this.bandBusinessController.findByRole(q.split(":")[1]);
+        return bands;
     }
 
     @PatchMapping(value = ID_ID + ARTISTS)

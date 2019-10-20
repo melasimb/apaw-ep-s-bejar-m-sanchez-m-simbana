@@ -20,6 +20,9 @@ public class Concert {
     @DBRef
     private Zone zone;
 
+    public Concert() {
+    }
+
     public Concert(LocalDateTime date, Integer duration, Zone zone) {
         this.date = date;
         this.duration = duration;
