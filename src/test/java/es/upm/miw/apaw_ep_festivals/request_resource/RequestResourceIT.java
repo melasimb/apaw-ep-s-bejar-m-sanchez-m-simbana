@@ -26,7 +26,7 @@ public class RequestResourceIT {
     }
 
     @Test
-    void testUserUpdateUserPatchDtoException() {
+    void testRequestUpdateBadRequestException() {
         String idRequest = this.requestDao.findAll().get(0).getId();
         this.webTestClient
                 .patch().uri(RequestResource.REQUESTS + RequestResource.ID_ID, idRequest)
@@ -36,7 +36,7 @@ public class RequestResourceIT {
     }
 
     @Test
-    void testUserUpdateIdException() {
+    void testRequestUpdateIdException() {
         this.webTestClient
                 .patch().uri(RequestResource.REQUESTS + RequestResource.ID_ID, "no")
                 .body(BodyInserters.fromObject(new RequestPatchDto("title", "description")))
@@ -45,7 +45,7 @@ public class RequestResourceIT {
     }
 
     @Test
-    void testUserUpdate() {
+    void testRequestUpdate() {
         String idRequest = this.requestDao.findAll().get(0).getId();
         this.webTestClient
                 .patch().uri(RequestResource.REQUESTS + RequestResource.ID_ID, idRequest)
