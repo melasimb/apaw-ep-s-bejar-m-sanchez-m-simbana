@@ -2,12 +2,17 @@ package es.upm.miw.apaw_ep_festivals.band_resource;
 
 import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
 import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
+import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
+import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -17,10 +22,13 @@ public class BandBusinessController {
 
     private ConcertDao concertDao;
 
+    private ZoneDao zoneDao;
+
     @Autowired
-    public BandBusinessController(BandDao bandDao, ConcertDao concertDao) {
+    public BandBusinessController(BandDao bandDao, ConcertDao concertDao, ZoneDao zoneDao) {
         this.bandDao = bandDao;
         this.concertDao = concertDao;
+        this.zoneDao = zoneDao;
     }
 
     public BandBasicDto create(BandCreationDto bandCreationDto) {
@@ -62,8 +70,34 @@ public class BandBusinessController {
         return new BandDto(band);
     }
 
+    public List<Artist> getArtists(String id) {
+        Band band = this.findBandByIdAssured(id);
+        return band.getArtists();
+    }
+
     public void delete(String id) {
         Band band = this.findBandByIdAssured(id);
         this.bandDao.delete(band);
+    }
+
+    public List<BandDto> findByConcertDate(LocalDateTime concertDate) {
+        return this.bandDao.findAll().stream()
+                .filter(band -> band.getConcerts().stream().anyMatch((concert -> concert.getDate().getDayOfYear() == concertDate.getDayOfYear())))
+                .map(BandDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public void updateConcert(String idBand, String idConcert, ConcertDto concertDto) {
+        Band band = this.findBandByIdAssured(idBand);
+        Zone zone = this.zoneDao.findById(concertDto.getZoneId()).orElseThrow(() -> new NotFoundException("Zone id: " + concertDto.getZoneId()));
+        Optional<Concert> optionalConcert = band.getConcerts().stream().filter(concertToChange -> concertToChange.getId().equals(idConcert)).findFirst();
+        if (!optionalConcert.isPresent()) {
+            throw new NotFoundException("Concert is not present in Band: " + idBand);
+        }
+        Concert concert = optionalConcert.get();
+        concert.setZone(zone);
+        concert.setDuration(concertDto.getDuration());
+        concert.setDate(concertDto.getDate());
+        this.concertDao.save(concert);
     }
 }

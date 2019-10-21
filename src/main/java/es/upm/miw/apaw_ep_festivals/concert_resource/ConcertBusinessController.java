@@ -2,6 +2,7 @@ package es.upm.miw.apaw_ep_festivals.concert_resource;
 
 import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
 import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import es.upm.miw.apaw_ep_festivals.exceptions.NotFoundException;
 import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;

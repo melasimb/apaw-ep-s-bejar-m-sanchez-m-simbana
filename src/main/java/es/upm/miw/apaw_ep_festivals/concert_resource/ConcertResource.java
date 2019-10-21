@@ -1,5 +1,6 @@
 package es.upm.miw.apaw_ep_festivals.concert_resource;
 
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
