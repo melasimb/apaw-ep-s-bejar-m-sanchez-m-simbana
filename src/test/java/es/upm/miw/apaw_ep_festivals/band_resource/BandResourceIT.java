@@ -2,9 +2,11 @@ package es.upm.miw.apaw_ep_festivals.band_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
 import es.upm.miw.apaw_ep_festivals.concert_data.Concert;
-import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertDto;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDao;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertResource;
 import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
+import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneDto;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneResource;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,15 @@ class BandResourceIT {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private BandDao bandDao;
+
+    @Autowired
+    private ZoneDao zoneDao;
+
+    @Autowired
+    private ConcertDao concertDao;
 
     BandBasicDto createBand(String name, List<Artist> artists, LocalDateTime concertDate, Integer concertDuration) {
         List<String> concertsId = new ArrayList<>();
@@ -85,6 +97,68 @@ class BandResourceIT {
         assertEquals(2, bands.size());
         assertEquals("singer", roleBandOne);
         assertEquals("singer", roleBandThree);
+    }
+
+    @Test
+    void testFindByConcertDate() {
+        LocalDateTime dateQueryParam = LocalDateTime.of(2019, 11, 24, 0, 0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateQueryParam = dateQueryParam.format(dateTimeFormatter);
+
+        List<Artist> artistsScorpions = new ArrayList<>();
+        artistsScorpions.add(new Artist("Klaus Miller", LocalDateTime.now(), "main singer"));
+        LocalDateTime ScorpionsConcertDate = LocalDateTime.of(2019, 11, 24, 22, 45);
+        createBand("Scorpions", artistsScorpions, ScorpionsConcertDate, 120);
+
+        List<Artist> artistsTheCure = new ArrayList<>();
+        artistsTheCure.add(new Artist("Robert Smith", LocalDateTime.now(), "main singer"));
+        LocalDateTime TheCureConcertDate = LocalDateTime.of(2019, 12, 12, 22, 45);
+        createBand("The Cure", artistsTheCure, TheCureConcertDate, 120);
+
+        List<Artist> artistsTheOffspring = new ArrayList<>();
+        artistsTheOffspring.add(new Artist("Dexter Holland", LocalDateTime.now(), "main singer"));
+        LocalDateTime OffspringConcertDate = LocalDateTime.of(2019, 11, 24, 23, 45);
+        createBand("The Offspring", artistsTheOffspring, OffspringConcertDate, 135);
+
+        List<BandDto> bands = this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                        .queryParam("q", "concerts.date:" + formattedDateQueryParam)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BandDto.class)
+                .returnResult().getResponseBody();
+        assertFalse(bands.isEmpty());
+        assertEquals(2, bands.size());
+        assertTrue(bands.stream().anyMatch((bandDto -> bandDto.getName().equals("The Offspring"))));
+        assertTrue(bands.stream().anyMatch((bandDto -> bandDto.getName().equals("Scorpions"))));
+    }
+
+    @Test
+    void testFindByConcertDateException() {
+        this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                .queryParam("q", "concerts.date:" + "bad formatted date")
+                .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testFindByConcertDateEmptyResponse() {
+        LocalDateTime dateQueryParam = LocalDateTime.of(2020, 10, 8, 0, 0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateQueryParam = dateQueryParam.format(dateTimeFormatter);
+
+        List<BandDto> bands = this.webTestClient
+                .get().uri(uriBuilder -> uriBuilder.path(BandResource.BANDS + BandResource.SEARCH)
+                        .queryParam("q", "concerts.date:" + formattedDateQueryParam)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BandDto.class)
+                .returnResult().getResponseBody();
+        assertTrue(bands.isEmpty());
     }
 
     @Test
@@ -247,5 +321,61 @@ class BandResourceIT {
                 .delete().uri(BandResource.BANDS + BandResource.ID_ID, "id not found")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+
+    @Test
+    void testUpdateConcert() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthday = LocalDateTime.of(1997, 5, 24, 5, 17);
+        artists.add(new Artist("Dave Smith", birthday, "first guitar"));
+        LocalDateTime concertDate = LocalDateTime.of(2022, 11, 28, 23, 45);
+        BandBasicDto bandBasicDto = createBand("Sum 41", artists, concertDate, 30);
+        Concert concertBeforeChange = this.bandDao.findById(bandBasicDto.getId()).get().getConcerts().get(0);
+        Zone zone = new Zone("ZoneToChange", "rock", 2000, true);
+        this.zoneDao.save(zone);
+        Concert concertAfterChange = new Concert(concertDate, 60, this.zoneDao.findAll().get(0));
+        this.webTestClient
+                .put().uri(BandResource.BANDS + BandResource.ID_BAND + BandResource.CONCERTS + BandResource.ID_CONCERT, bandBasicDto.getId(), concertBeforeChange.getId())
+                .body(BodyInserters.fromObject(new ConcertDto(concertAfterChange)))
+                .exchange()
+                .expectStatus().isOk();
+        Concert changedConcert = this.concertDao.findById(concertBeforeChange.getId()).get();
+        assertEquals(Integer.valueOf(60), changedConcert.getDuration());
+        assertEquals(concertAfterChange.getDate(), changedConcert.getDate());
+        assertEquals(concertAfterChange.getZone().getId(), changedConcert.getZone().getId());
+    }
+
+    @Test
+    void testUpdateConcertNotFoundException() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthday = LocalDateTime.of(1964, 5, 24, 5, 17);
+        artists.add(new Artist("Brian May", birthday, "first guitar"));
+        LocalDateTime concertDate = LocalDateTime.of(2020, 5, 7, 23, 45);
+        BandBasicDto bandBasicDto = createBand("Queen", artists, concertDate, 30);
+        Concert concertBeforeChange = this.bandDao.findById(bandBasicDto.getId()).get().getConcerts().get(0);
+        Zone zone = new Zone("ZoneToChange", "pop-rock", 3000, false);
+        this.zoneDao.save(zone);
+        Concert concertAfterChange = new Concert(concertDate, 60, this.zoneDao.findAll().get(0));
+        this.webTestClient
+                .put().uri(BandResource.BANDS + BandResource.ID_BAND + BandResource.CONCERTS + BandResource.ID_CONCERT, bandBasicDto.getId(), "id not found")
+                .body(BodyInserters.fromObject(new ConcertDto(concertAfterChange)))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testUpdateConcertBadRequestException() {
+        List<Artist> artists = new ArrayList<>();
+        LocalDateTime birthday = LocalDateTime.of(1957, 8, 12, 4, 17);
+        artists.add(new Artist("Ben Moody", birthday, "first guitar"));
+        LocalDateTime concertDate = LocalDateTime.of(2022, 11, 28, 23, 45);
+        BandBasicDto bandBasicDto = createBand("Evanescence", artists, concertDate, 30);
+
+        this.webTestClient
+                .put().uri(BandResource.BANDS + BandResource.ID_BAND + BandResource.CONCERTS + BandResource.ID_CONCERT, bandBasicDto.getId(), "id not found")
+                .body(BodyInserters.fromObject(new ConcertDto()))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

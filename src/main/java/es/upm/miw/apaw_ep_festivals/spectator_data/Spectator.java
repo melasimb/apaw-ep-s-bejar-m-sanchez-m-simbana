@@ -34,20 +34,20 @@ public class Spectator {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
-    public LocalDateTime getBirthday() {
-        return birthday;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public LocalDateTime getBirthday() {
+        return birthday;
     }
 
     public void setBirthday(LocalDateTime birthday) {
