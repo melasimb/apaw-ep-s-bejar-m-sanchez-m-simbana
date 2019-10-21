@@ -1,6 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.concert_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneDto;
 import es.upm.miw.apaw_ep_festivals.zone_resource.ZoneResource;
 import org.junit.jupiter.api.Test;

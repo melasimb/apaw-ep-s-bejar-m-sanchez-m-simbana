@@ -1,7 +1,7 @@
 package es.upm.miw.apaw_ep_festivals.zone_resource;
 
 import es.upm.miw.apaw_ep_festivals.ApiTestConfig;
-import es.upm.miw.apaw_ep_festivals.concert_resource.ConcertDto;
+import es.upm.miw.apaw_ep_festivals.concert_data.ConcertDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,15 +90,13 @@ class ZoneResourceIT {
                 .expectBody(ZoneDto.class)
                 .returnResult().getResponseBody().getId();
 
-        ConcertDto concertDto = this.webTestClient
+        return this.webTestClient
                 .post().uri("/concerts")
                 .body(BodyInserters.fromObject(new ConcertDto(date, 120, zoneId)))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ConcertDto.class)
                 .returnResult().getResponseBody();
-
-        return concertDto;
     }
 
     @Test
