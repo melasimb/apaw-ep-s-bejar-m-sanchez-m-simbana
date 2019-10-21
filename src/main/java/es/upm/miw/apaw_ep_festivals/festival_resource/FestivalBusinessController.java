@@ -16,14 +16,12 @@ import java.util.stream.Collectors;
 public class FestivalBusinessController {
 
     private FestivalDao festivalDao;
-    private ConcertDao concertDao;
     private SpectatorDao spectatorDao;
 
     @Autowired
-    public FestivalBusinessController(FestivalDao festivalDao, SpectatorDao spectatorDao, ConcertDao concertDao) {
+    public FestivalBusinessController(FestivalDao festivalDao, SpectatorDao spectatorDao) {
         this.festivalDao = festivalDao;
         this.spectatorDao = spectatorDao;
-        this.concertDao = concertDao;
     }
 
     public FestivalBasicDto create(FestivalBasicDto festivalBasicDto) {
