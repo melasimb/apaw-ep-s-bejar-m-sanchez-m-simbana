@@ -37,12 +37,24 @@ public class Concert {
         return date;
     }
 
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
     public Integer getDuration() {
         return duration;
     }
 
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
     public Zone getZone() {
         return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
     }
 
     @Override
