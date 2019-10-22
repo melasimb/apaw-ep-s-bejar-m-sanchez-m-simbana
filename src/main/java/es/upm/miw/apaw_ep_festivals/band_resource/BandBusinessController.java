@@ -8,6 +8,8 @@ import es.upm.miw.apaw_ep_festivals.zone_data.Zone;
 import es.upm.miw.apaw_ep_festivals.zone_data.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.EmitterProcessor;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +26,18 @@ public class BandBusinessController {
 
     private ZoneDao zoneDao;
 
+    private EmitterProcessor<String> emitter;
+
     @Autowired
     public BandBusinessController(BandDao bandDao, ConcertDao concertDao, ZoneDao zoneDao) {
         this.bandDao = bandDao;
         this.concertDao = concertDao;
         this.zoneDao = zoneDao;
+        this.emitter = EmitterProcessor.create();
+    }
+
+    public Flux<String> publisher() {
+        return this.emitter;
     }
 
     public BandBasicDto create(BandCreationDto bandCreationDto) {
@@ -41,6 +50,7 @@ public class BandBusinessController {
         }
         Band band = new Band(bandCreationDto.getName(), bandCreationDto.getArtists(), concerts);
         this.bandDao.save(band);
+        this.emitter.onNext(band.getName());
         return new BandBasicDto(band);
     }
 
