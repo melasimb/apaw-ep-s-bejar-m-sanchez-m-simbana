@@ -17,7 +17,7 @@ class SpectatorDaoIT {
 
     @Test
     void testCreate() {
-        Spectator spectator = new Spectator("Melany", "Simbaña", LocalDateTime.now());
+        Spectator spectator = Spectator.builder().name("Melany").surname("Simbaña").birthday(LocalDateTime.now()).build();
         this.spectatorDao.save(spectator);
         Spectator databaseSpectator = this.spectatorDao.findById(spectator.getId()).orElseGet(Assertions::fail);
         assertEquals("Melany", databaseSpectator.getName());

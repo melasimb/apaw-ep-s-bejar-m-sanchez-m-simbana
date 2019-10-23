@@ -26,6 +26,10 @@ public class Spectator {
     public Spectator() {
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public String getId() {
         return id;
     }
@@ -62,5 +66,40 @@ public class Spectator {
                 ", surname='" + surname +
                 ", birthday='" + birthday + '\'' +
                 '}';
+    }
+
+    public static class Builder {
+
+        private Spectator spectator;
+
+        private Builder() {
+            this.spectator = new Spectator();
+        }
+
+        public Builder name(String name) {
+            this.spectator.name = name;
+            return this;
+        }
+
+        public Builder surname(String surname) {
+            this.spectator.surname = surname;
+            return this;
+        }
+
+        public Builder birthday(LocalDateTime birthday) {
+            this.spectator.birthday = birthday;
+            return this;
+        }
+
+        public Builder byDefault() {
+            Builder builder = new Builder();
+            LocalDateTime date = LocalDateTime.of(1995, 3, 24, 9, 0);
+            return builder.name("Tony").surname("Pacheco").birthday(date);
+        }
+
+        public Spectator build() {
+            return this.spectator;
+        }
+
     }
 }
