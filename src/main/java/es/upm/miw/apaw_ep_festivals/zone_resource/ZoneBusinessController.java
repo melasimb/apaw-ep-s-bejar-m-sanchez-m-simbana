@@ -33,7 +33,8 @@ public class ZoneBusinessController {
     }
 
     public ZoneDto create(ZoneDto zoneDto) {
-        Zone zone = new Zone(zoneDto.getName(), zoneDto.getGenre(), zoneDto.getCapacity(), zoneDto.getAdaptedDisabled());
+        Zone zone = Zone.builder().name(zoneDto.getName()).genre(zoneDto.getGenre()).capacity(zoneDto.getCapacity())
+                .adaptedDisabled(zoneDto.getAdaptedDisabled()).build();
         this.zoneDao.save(zone);
         ZoneDto zoneDtoReturn = new ZoneDto(zone);
         this.emitter.onNext("The following zone has been added: " + zoneDtoReturn.getBasicInformation());

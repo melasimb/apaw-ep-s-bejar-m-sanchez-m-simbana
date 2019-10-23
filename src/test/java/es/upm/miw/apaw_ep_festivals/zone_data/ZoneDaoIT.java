@@ -15,9 +15,9 @@ class ZoneDaoIT {
 
     @Test
     void testCreate() {
-        Zone zone = new Zone("Zone B", "Rock", 3000, true);
+        Zone zone = Zone.builder().byDefault().build();
         this.zoneDao.save(zone);
         Zone databaseZone = this.zoneDao.findById(zone.getId()).orElseGet(Assertions::fail);
-        assertEquals("Zone B", databaseZone.getName());
+        assertEquals("zone-1", databaseZone.getName());
     }
 }

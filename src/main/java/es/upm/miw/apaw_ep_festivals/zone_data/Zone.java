@@ -63,6 +63,10 @@ public class Zone {
         this.adaptedDisabled = adaptedDisabled;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @Override
     public String toString() {
         return "Zone{" +
@@ -72,5 +76,43 @@ public class Zone {
                 ", capacity='" + capacity + '\'' +
                 ", adaptedDisabled=" + adaptedDisabled +
                 '}';
+    }
+
+    public static class Builder {
+
+        private Zone zone;
+
+        private Builder() {
+            this.zone = new Zone();
+        }
+
+        public Builder name(String name) {
+            this.zone.name = name;
+            return this;
+        }
+
+        public Builder genre(String genre) {
+            this.zone.genre = genre;
+            return this;
+        }
+
+        public Builder capacity(Integer capacity) {
+            this.zone.capacity = capacity;
+            return this;
+        }
+
+        public Builder adaptedDisabled(Boolean adaptedDisabled) {
+            this.zone.adaptedDisabled = adaptedDisabled;
+            return this;
+        }
+
+        public Builder byDefault() {
+            Builder builder = new Builder();
+            return builder.name("zone-1").genre("genre-1").capacity(100).adaptedDisabled(true);
+        }
+
+        public Zone build() {
+            return this.zone;
+        }
     }
 }
