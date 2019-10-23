@@ -13,7 +13,7 @@ public class ZoneBusinessControllerPublisherIT {
 
     @Test
     void testPublisher() {
-        ZoneDto zoneDto = new ZoneDto("zone-1", "Pop", 300, false);
+        ZoneDto zoneDto = ZoneDto.builder().byDefault().build();
         StepVerifier
                 .create(zoneBusinessControllerPublisher.publisher())
                 .then(() -> zoneBusinessControllerPublisher.create(zoneDto))

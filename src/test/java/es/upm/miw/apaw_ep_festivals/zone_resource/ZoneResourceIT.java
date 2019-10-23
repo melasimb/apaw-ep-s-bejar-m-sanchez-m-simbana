@@ -19,18 +19,8 @@ class ZoneResourceIT {
     @Autowired
     private WebTestClient webTestClient;
 
-    @Test
-    void testCreate() {
-        ZoneDto zoneDto = createZone("Zone A");
-        assertNotNull(zoneDto);
-        assertEquals("Zone A", zoneDto.getName());
-        assertEquals("Pop", zoneDto.getGenre());
-        assertEquals("300", zoneDto.getCapacity().toString());
-        assertEquals(false, zoneDto.getAdaptedDisabled());
-    }
-
     ZoneDto createZone(String name) {
-        ZoneDto zoneDto = new ZoneDto(name, "Pop", 300, false);
+        ZoneDto zoneDto = ZoneDto.builder().byDefault().name(name).build();
         return this.webTestClient
                 .post().uri(ZoneResource.ZONES)
                 .body(BodyInserters.fromObject(zoneDto))
@@ -40,8 +30,18 @@ class ZoneResourceIT {
     }
 
     @Test
+    void testCreate() {
+        ZoneDto zoneDto = createZone("Zone A");
+        assertNotNull(zoneDto);
+        assertEquals("Zone A", zoneDto.getName());
+        assertEquals("genre-1", zoneDto.getGenre());
+        assertEquals("100", zoneDto.getCapacity().toString());
+        assertEquals(true, zoneDto.getAdaptedDisabled());
+    }
+
+    @Test
     void testCreateZoneException() {
-        ZoneDto zoneDto = new ZoneDto("Zone A", null, null, false);
+        ZoneDto zoneDto = ZoneDto.builder().name("Zone A").build();
         this.webTestClient
                 .post().uri(ZoneResource.ZONES)
                 .body(BodyInserters.fromObject(zoneDto))
@@ -52,7 +52,7 @@ class ZoneResourceIT {
     @Test
     void testPutZone() {
         String id = createZone("Zone B").getId();
-        ZoneDto zoneDto = new ZoneDto("Oasis", "Rock", 500, true);
+        ZoneDto zoneDto = ZoneDto.builder().name("Oasis").genre("Rock").capacity(500).adaptedDisabled(true).build();
         this.webTestClient
                 .put().uri(ZoneResource.ZONES + ZoneResource.ID_ID, id)
                 .body(BodyInserters.fromObject(zoneDto))
@@ -71,7 +71,7 @@ class ZoneResourceIT {
 
     @Test
     void testPutZoneNotFoundException() {
-        ZoneDto zoneDto = new ZoneDto("Oasis", "Rock", 500, true);
+        ZoneDto zoneDto = ZoneDto.builder().name("Oasis").genre("Rock").capacity(500).adaptedDisabled(true).build();
         this.webTestClient
                 .put().uri(ZoneResource.ZONES + ZoneResource.ID_ID, "noId")
                 .body(BodyInserters.fromObject(zoneDto))
@@ -80,16 +80,7 @@ class ZoneResourceIT {
     }
 
     ConcertDto createConcert(LocalDateTime date) {
-        ZoneDto zoneDto = new ZoneDto("Zone C", "Latin", 5000, true);
-
-        String zoneId = this.webTestClient
-                .post().uri(ZoneResource.ZONES)
-                .body(BodyInserters.fromObject(zoneDto))
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(ZoneDto.class)
-                .returnResult().getResponseBody().getId();
-
+        String zoneId = this.createZone("Zone C").getId();
         return this.webTestClient
                 .post().uri("/concerts")
                 .body(BodyInserters.fromObject(new ConcertDto(date, 120, zoneId)))
