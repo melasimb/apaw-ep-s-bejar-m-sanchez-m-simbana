@@ -77,4 +77,12 @@ public class SpectatorDto {
                 ", birthday='" + birthday + '\'' +
                 '}';
     }
+
+    public String toStringWithoutId() {
+        return "SpectatorDto{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthday='" + birthday + '\'' +
+                '}';
+    }
 }
