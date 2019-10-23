@@ -30,6 +30,10 @@ public class SpectatorDto {
         this.birthday = spectator.getBirthday();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public String getId() {
         return id;
     }
@@ -84,5 +88,39 @@ public class SpectatorDto {
                 ", surname='" + surname + '\'' +
                 ", birthday='" + birthday + '\'' +
                 '}';
+    }
+
+    public static class Builder {
+
+        private SpectatorDto spectatorDto;
+
+        private Builder() {
+            this.spectatorDto = new SpectatorDto();
+        }
+
+        public Builder name(String name) {
+            this.spectatorDto.name = name;
+            return this;
+        }
+
+        public Builder surname(String surname) {
+            this.spectatorDto.surname = surname;
+            return this;
+        }
+
+        public Builder birthday(LocalDateTime birthday) {
+            this.spectatorDto.birthday = birthday;
+            return this;
+        }
+
+        public Builder byDefault() {
+            Builder builder = new Builder();
+            return builder.name("Sonia").surname("Béjar").birthday(LocalDateTime.of(1995, 4, 17, 11, 0));
+        }
+
+        public SpectatorDto build() {
+            return this.spectatorDto;
+        }
+
     }
 }

@@ -16,7 +16,7 @@ public class SpectatorBusinessControllerPublisherIT {
 
     @Test
     void testPublisher() {
-        SpectatorDto spectatorDto = new SpectatorDto("Sonia", "Cazorla", LocalDateTime.now());
+        SpectatorDto spectatorDto = SpectatorDto.builder().name("Sonia").surname("Cazorla").birthday(LocalDateTime.now()).build();
         StepVerifier
                 .create(spectatorBusinessControllerPublisher.publisher())
                 .then(() -> spectatorBusinessControllerPublisher.create(spectatorDto))

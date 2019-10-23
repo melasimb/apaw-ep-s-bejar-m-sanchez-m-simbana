@@ -22,7 +22,7 @@ public class SpectatorResourceIT {
     @Test
     void testCreate() {
         LocalDateTime birthday = LocalDateTime.of(1995, 4, 17, 11, 0);
-        SpectatorDto spectatorDto = createSpectator("Sonia", "Béjar", birthday);
+        SpectatorDto spectatorDto = SpectatorDto.builder().byDefault().build();
         assertNotNull(spectatorDto);
         assertEquals("Sonia", spectatorDto.getName());
         assertEquals("Béjar", spectatorDto.getSurname());

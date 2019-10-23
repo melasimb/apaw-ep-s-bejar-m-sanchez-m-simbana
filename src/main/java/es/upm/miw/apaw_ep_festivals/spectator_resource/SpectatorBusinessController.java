@@ -29,7 +29,7 @@ public class SpectatorBusinessController {
     }
 
     public SpectatorDto create(SpectatorDto spectatorDto) {
-        Spectator spectator = new Spectator(spectatorDto.getName(), spectatorDto.getSurname(), spectatorDto.getBirthday());
+        Spectator spectator = Spectator.builder().name(spectatorDto.getName()).surname(spectatorDto.getSurname()).birthday(spectatorDto.getBirthday()).build();
         this.spectatorDao.save(spectator);
         SpectatorDto spectatorDtoCreated = new SpectatorDto(spectator);
         this.emitter.onNext("The following Spectator has been added: " + spectatorDtoCreated.toStringWithoutId());
