@@ -3,7 +3,7 @@ package es.upm.miw.apaw_ep_festivals.spectator_data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpectatorComposite extends SpectatorComponent {
+public class SpectatorComposite implements SpectatorComponent {
 
     private String name;
 
@@ -16,22 +16,27 @@ public class SpectatorComposite extends SpectatorComponent {
 
     @Override
     public void add(SpectatorComponent spectatorComponent) {
-        assert spectatorComponent != null;
+        if(spectatorComponent == null){
+            throw new IllegalArgumentException("Invalid spectator");
+        }
         this.spectators.add(spectatorComponent);
     }
 
     @Override
     public void remove(SpectatorComponent spectatorComponent) {
-        assert spectatorComponent != null;
+        if(spectatorComponent == null){
+            throw new IllegalArgumentException("Invalid spectator");
+        }
         this.spectators.remove(spectatorComponent);
     }
 
     @Override
     public String info() {
-        String info = "Group name: " + name + "\\n\\t spectators:\\n";
+        StringBuilder info = new StringBuilder();
+        info.append("Group name: ").append(name).append("\\n\\t spectators:\\n");
         for (SpectatorComponent spectator : this.spectators) {
-            info += "\\t\\t" + spectator.info() + "\\n";
+            info.append("\\t\\t").append(spectator.info()).append("\\n");
         }
-        return info;
+        return info.toString();
     }
 }

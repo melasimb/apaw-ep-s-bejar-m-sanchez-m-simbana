@@ -21,7 +21,7 @@ public class SpectatorCompositeIT {
     private SpectatorComponent spectator;
 
     @Before
-    public void ini() {
+    public void init() {
         this.spectator = new SpectatorLeaf(new Spectator("David", "Smith", LocalDateTime.now()));
         this.group1 = new SpectatorComposite("Gold");
         this.group12 = new SpectatorComposite("Gold - Plus");
@@ -63,5 +63,17 @@ public class SpectatorCompositeIT {
                 "\\t\\t" + "David Smith\\n", this.group2.info());
         this.group2.remove(this.spectator);
         assertEquals("Group name: Platinum" + "\\n\\t spectators:\\n", this.group2.info());
+    }
+
+    @Test
+    public void testAddNullIfComposite() {
+        exception.expect(IllegalArgumentException.class);
+        this.group2.add(null);
+    }
+
+    @Test
+    public void testRemoveNullIfComposite() {
+        exception.expect(IllegalArgumentException.class);
+        this.group2.remove(null);
     }
 }
