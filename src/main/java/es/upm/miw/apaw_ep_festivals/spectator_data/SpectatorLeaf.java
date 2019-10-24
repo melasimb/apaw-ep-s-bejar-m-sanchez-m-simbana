@@ -1,6 +1,6 @@
 package es.upm.miw.apaw_ep_festivals.spectator_data;
 
-public class SpectatorLeaf extends SpectatorComponent {
+public class SpectatorLeaf implements SpectatorComponent {
 
     Spectator spectator;
 
@@ -15,6 +15,7 @@ public class SpectatorLeaf extends SpectatorComponent {
 
     @Override
     public void remove(SpectatorComponent spectatorComponent) {
+        //Do nothing because is a leaf
     }
 
     @Override
